@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import com.example.prac.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,9 +58,9 @@ public class ProjectController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        return projectService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        ProjectDTO project = projectService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", id));
+        return ResponseEntity.ok(project);
     }
 
     @Operation(summary = "Найти проекты по имени", description = "Возвращает проекты, содержащие указанную подстроку в названии")
@@ -83,12 +84,8 @@ public class ProjectController {
     })
     @PatchMapping("/{id}")
     public ResponseEntity<ProjectDTO> updateProjectPartially(@PathVariable Long id, @RequestBody ProjectDTO projectDTO) {
-        try {
-            ProjectDTO updatedProject = projectService.partialUpdate(id.intValue(), projectDTO);
-            return ResponseEntity.ok(updatedProject);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        ProjectDTO updatedProject = projectService.partialUpdate(id.intValue(), projectDTO);
+        return ResponseEntity.ok(updatedProject);
     }
 
     @Operation(summary = "Удалить проект", description = "Удаляет проект по указанному идентификатору")

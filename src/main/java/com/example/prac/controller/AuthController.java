@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +38,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> registerUser(@RequestBody Actor request) {
         AuthenticationResponse authenticationResponse = authenticationService.register(request);
-        return authenticationResponse != null ? ResponseEntity.ok(authenticationResponse): ResponseEntity.status(HttpStatus.CONFLICT).build();
+        return ResponseEntity.ok(authenticationResponse);
     }
 
     @Operation(
@@ -57,15 +55,7 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest request) {
-        try {
-            return ResponseEntity.ok(authenticationService.authenticate(request));
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
     @Operation(

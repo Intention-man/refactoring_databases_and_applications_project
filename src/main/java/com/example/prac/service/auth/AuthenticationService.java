@@ -4,6 +4,7 @@ import com.example.prac.data.DTO.auth.AuthenticationRequest;
 import com.example.prac.data.DTO.auth.AuthenticationResponse;
 import com.example.prac.data.model.authEntity.Actor;
 import com.example.prac.data.model.authEntity.Role;
+import com.example.prac.exception.ResourceAlreadyExistsException;
 import com.example.prac.repository.auth.ActorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +30,7 @@ public class AuthenticationService {
     public AuthenticationResponse register(Actor actor) {
         boolean userExists = actorRepository.existsByUsername(actor.getUsername());
         if (userExists){
-            return null;
+            throw new ResourceAlreadyExistsException("User", actor.getUsername());
         }
 
         actor.setPassword(passwordEncoder.encode(actor.getPassword()));

@@ -1,0 +1,146 @@
+{
+  "info": {
+    "name": "ModuleController API",
+    "description": "API для управления модулями",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Module",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"Software\",\n  \"description\": \"Authentication module\",\n  \"status\": \"ACTIVE\",\n  \"projectId\": 1001\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/modules",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "modules"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Modules",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/modules",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "modules"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Module By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/modules/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "modules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Module Partially",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"Deprecated\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/modules/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "modules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Module",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/modules/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "modules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:18123"
+    }
+  ]
+}

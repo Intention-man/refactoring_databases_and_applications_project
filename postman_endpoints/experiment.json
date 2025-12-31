@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "Experiment API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Experiments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:18123/api/experiments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "18123",
+          "path": ["api", "experiments"]
+        }
+      }
+    },
+    {
+      "name": "Get Experiment by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:18123/api/experiments/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "18123",
+          "path": ["api", "experiments", "{{id}}"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Experiment",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New Experiment\",\n  \"description\": \"This is a test experiment\",\n  \"status\": \"ACTIVE\",\n  \"deadline\": \"2023-12-31\",\n  \"projectId\": 123\n}"
+        },
+        "url": {
+          "raw": "http://localhost:18123/api/experiments",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "18123",
+          "path": ["api", "experiments"]
+        }
+      }
+    },
+    {
+      "name": "Partially Update Experiment",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Experiment Name\",\n  \"status\": \"COMPLETED\",\n  \"deadline\": \"2024-01-31\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:18123/api/experiments/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "18123",
+          "path": ["api", "experiments", "{{id}}"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete Experiment",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:18123/api/experiments/{{id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "18123",
+          "path": ["api", "experiments", "{{id}}"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

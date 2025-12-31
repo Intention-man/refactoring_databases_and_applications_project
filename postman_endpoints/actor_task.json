@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "ActorTaskController API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create ActorTask",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actorId\": 1,\n  \"taskId\": 2\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/actor-tasks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "actor-tasks"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All ActorTasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/actor-tasks",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "actor-tasks"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get ActorTask By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/actor-tasks/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "actor-tasks",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update ActorTask Partially",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"actorId\": 2\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/actor-tasks/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "actor-tasks",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete ActorTask",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/actor-tasks/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "actor-tasks",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:18123"
+    }
+  ]
+}

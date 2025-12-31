@@ -1,0 +1,174 @@
+{
+  "info": {
+    "name": "ProjectController API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"New Project\",\n    \"status\": \"planned\",\n    \"startDate\": \"2023-11-01\",\n    \"endDate\": \"2023-12-01\",\n    \"budget\": 1000000,\n    \"spaceStationId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/projects",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Projects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/projects",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Project By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/projects/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Projects By Name Containing",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/plain",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "\"Project Name\""
+        },
+        "url": {
+          "raw": "{{base_url}}/api/projects/find_by_name_containing",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            "find_by_name_containing"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Project Partially",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\":\"Updated Project Name\",\n    \"status\": \"in_progress\",\n    \"endDate\": \"2023-12-15\",\n    \"budget\": 1500000\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/projects/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Project",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/projects/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "projects",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:18123"
+    }
+  ]
+}

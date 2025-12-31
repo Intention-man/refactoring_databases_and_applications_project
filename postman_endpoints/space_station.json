@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "SpaceStationController API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Space Station",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"International Space Station\",\n    \"launchDate\": \"1998-11-20\",\n    \"orbit\": \"Low Earth Orbit\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/space-stations",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "space-stations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Space Stations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/space-stations",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "space-stations"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Space Station By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/space-stations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "space-stations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Space Station Partially",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"launchDate\": \"2000-01-01\",\n    \"orbit\": \"Modified Orbit\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/space-stations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "space-stations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Space Station",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url":{
+          "raw": "{{base_url}}/api/space-stations/:id",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "space-stations",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

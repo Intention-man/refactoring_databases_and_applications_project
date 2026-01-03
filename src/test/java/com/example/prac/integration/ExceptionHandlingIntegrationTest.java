@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ExceptionHandlingIntegrationTest {
 
     @Test
-    void testResourceNotFoundException_MessageFormat() {
+    void testResourceNotFoundExceptionMessageFormat() {
         // Given
         ResourceNotFoundException ex1 = new ResourceNotFoundException("Project", 123L);
         ResourceNotFoundException ex2 = new ResourceNotFoundException("User", "admin");
@@ -22,7 +22,7 @@ class ExceptionHandlingIntegrationTest {
     }
 
     @Test
-    void testResourceAlreadyExistsException_MessageFormat() {
+    void testResourceAlreadyExistsExceptionMessageFormat() {
         // Given
         ResourceAlreadyExistsException ex1 = new ResourceAlreadyExistsException("User", "admin");
         ResourceAlreadyExistsException ex2 = new ResourceAlreadyExistsException("Custom message");

@@ -14,7 +14,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,7 +51,8 @@ class GlobalExceptionHandlerTest {
     void testHandleResourceAlreadyExistsException() {
         ResourceAlreadyExistsException ex = new ResourceAlreadyExistsException("User", "admin");
         
-        ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleResourceAlreadyExistsException(ex, request);
+        ResponseEntity<ErrorResponse> response =
+                globalExceptionHandler.handleResourceAlreadyExistsException(ex, request);
         
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());

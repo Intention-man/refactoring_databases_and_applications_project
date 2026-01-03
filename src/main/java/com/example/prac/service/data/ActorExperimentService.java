@@ -8,10 +8,11 @@ import com.example.prac.mappers.impl.ActorExperimentMapper;
 import com.example.prac.repository.auth.ActorRepository;
 import com.example.prac.repository.data.ActorExperimentRepository;
 import com.example.prac.repository.data.ExperimentRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,13 +26,12 @@ public class ActorExperimentService {
     private final ActorRepository actorRepository;
     private final ExperimentRepository experimentRepository;
     private final ActorExperimentMapper actorExperimentMapper;
-    private final SessionFactory sessionFactory;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
 
+    @Transactional
     public ActorExperimentDTO save(ActorExperimentDTO actorExperimentDTO) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-
         if (!actorRepository.existsById(actorExperimentDTO.getActorId())) {
             throw new RuntimeException("Actor doesn't exist");
         }
@@ -43,12 +43,10 @@ public class ActorExperimentService {
             throw new RuntimeException("Experiment is not open");
         }
 
-        session.createNativeQuery("CALL add_actor_to_experiment(:actorId, :experimentId)")
+        entityManager.createNativeQuery("CALL add_actor_to_experiment(:actorId, :experimentId)")
                 .setParameter("actorId", actorExperimentDTO.getActorId())
                 .setParameter("experimentId", actorExperimentDTO.getExperimentId())
                 .executeUpdate();
-
-        session.getTransaction().commit();
 
         return actorExperimentDTO;
     }

@@ -138,9 +138,11 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         log.warn("Method argument type mismatch: {}", ex.getMessage());
         
-        String typeName = ex.getRequiredType() != null 
-                ? ex.getRequiredType().getSimpleName() 
-                : "unknown";
+        String typeName = "unknown";
+        Class<?> requiredType = ex.getRequiredType();
+        if (requiredType != null) {
+            typeName = requiredType.getSimpleName();
+        }
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())

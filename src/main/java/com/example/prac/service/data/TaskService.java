@@ -8,6 +8,7 @@ import com.example.prac.repository.data.ProjectRepository;
 import com.example.prac.repository.data.TaskRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,8 +23,10 @@ public class TaskService {
     private final ProjectRepository projectRepository;
     private final TaskMapper taskMapper;
 
+    @Transactional
     public TaskDTO save(TaskDTO taskDTO) {
         Task task = taskMapper.mapFrom(taskDTO);
+        checkAndSetOverdueStatus(task);
         return taskMapper.mapTo(taskRepository.save(task));
     }
 
@@ -55,17 +58,29 @@ public class TaskService {
 
             if (dto.getProjectId() != null) {
                 Project project = projectRepository.findById(dto.getProjectId())
-                        .orElseThrow(() -> new RuntimeException("Project doesn't exist"));
+                        .orElseThrow(() -> new com.example.prac.exception.ResourceNotFoundException("Project", dto.getProjectId().longValue()));
                 existing.setProject(project);
             }
 
+            checkAndSetOverdueStatus(existing);
             Task saved = taskRepository.save(existing);
             return taskMapper.mapTo(saved);
-        }).orElseThrow(() -> new RuntimeException("Task doesn't exist"));
+        }).orElseThrow(() -> new com.example.prac.exception.ResourceNotFoundException("Task", id.longValue()));
     }
-
 
     public void delete(Long id) {
         taskRepository.deleteById(id.intValue());
+    }
+
+    /**
+     * Проверяет и устанавливает статус OVERDUE для задачи, если она просрочена.
+     * Логика перенесена из триггера check_task_overdue().
+     */
+    private void checkAndSetOverdueStatus(Task task) {
+        if (task.getStatus() != null && !"COMPLETED".equals(task.getStatus())
+                && task.getDeadline() != null
+                && LocalDate.now().isAfter(task.getDeadline())) {
+            task.setStatus("OVERDUE");
+        }
     }
 }

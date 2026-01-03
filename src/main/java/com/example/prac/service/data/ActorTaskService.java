@@ -8,8 +8,8 @@ import com.example.prac.mappers.impl.ActorTaskMapper;
 import com.example.prac.repository.auth.ActorRepository;
 import com.example.prac.repository.data.ActorTaskRepository;
 import com.example.prac.repository.data.TaskRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.example.prac.exception.BusinessLogicException;
+import com.example.prac.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,28 +26,32 @@ public class ActorTaskService {
     private final ActorRepository actorRepository;
     private final TaskRepository taskRepository;
     private final ActorTaskMapper actorTaskMapper;
-    
-    @PersistenceContext
-    private EntityManager entityManager;
-
 
     @Transactional
     public ActorTaskDTO save(ActorTaskDTO actorTaskDTO) {
-        if (!actorRepository.existsById(actorTaskDTO.getActorId())) {
-            throw new RuntimeException("Actor doesn't exist");
-        }
+        // Проверка существования актора
+        Actor actor = actorRepository.findById(actorTaskDTO.getActorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Actor", actorTaskDTO.getActorId().longValue()));
 
+        // Проверка существования задачи и её статуса
         Task task = taskRepository.findById(actorTaskDTO.getTaskId())
-                .orElseThrow(() -> new RuntimeException("Task doesn't exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Task", actorTaskDTO.getTaskId().longValue()));
 
         if (!Objects.equals(task.getStatus(), "OPEN")) {
-            throw new RuntimeException("Task is not open");
+            throw new BusinessLogicException("Task is not open. Only tasks with status 'OPEN' can have actors assigned.");
         }
 
-        entityManager.createNativeQuery("CALL add_actor_to_task(:actorId, :taskId)")
-                .setParameter("actorId", actorTaskDTO.getActorId())
-                .setParameter("taskId", actorTaskDTO.getTaskId())
-                .executeUpdate();
+        // Создание и сохранение связи Actor-Task
+        ActorTask actorTask = new ActorTask();
+        actorTask.setActor(actor);
+        actorTask.setTask(task);
+        actorTaskRepository.save(actorTask);
+
+        // Обновление статуса задачи на ACTIVE, если она была OPEN
+        if ("OPEN".equals(task.getStatus())) {
+            task.setStatus("ACTIVE");
+            taskRepository.save(task);
+        }
 
         return actorTaskDTO;
     }
@@ -84,7 +88,7 @@ public class ActorTaskService {
 
             ActorTask saved = actorTaskRepository.save(existing);
             return actorTaskMapper.mapTo(saved);
-        }).orElseThrow(() -> new RuntimeException("ActorTask doesn't exist"));
+        }).orElseThrow(() -> new ResourceNotFoundException("ActorTask", id.longValue()));
     }
 
     public void delete(Long id) {

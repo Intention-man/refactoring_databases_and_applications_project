@@ -6,6 +6,7 @@ import com.example.prac.mappers.impl.ExperimentMapper;
 import com.example.prac.repository.data.ExperimentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,8 +20,10 @@ public class ExperimentService {
     private final ExperimentRepository experimentRepository;
     private final ExperimentMapper experimentMapper;
 
+    @Transactional
     public ExperimentDTO save(ExperimentDTO experimentDTO) {
         Experiment experiment = experimentMapper.mapFrom(experimentDTO);
+        checkAndSetOverdueStatus(experiment);
         return experimentMapper.mapTo(experimentRepository.save(experiment));
     }
 
@@ -61,12 +64,25 @@ public class ExperimentService {
                     .map(deadlineStr -> LocalDate.parse(deadlineStr, formatter))
                     .ifPresent(existing::setDeadline);
 
+            checkAndSetOverdueStatus(existing);
             Experiment updatedExperiment = experimentRepository.save(existing);
             return experimentMapper.mapTo(updatedExperiment);
-        }).orElseThrow(() -> new RuntimeException("Experiment doesn't exist"));
+        }).orElseThrow(() -> new com.example.prac.exception.ResourceNotFoundException("Experiment", (long) id));
     }
 
     public void delete(Long id) {
         experimentRepository.deleteById(id.intValue());
+    }
+
+    /**
+     * Проверяет и устанавливает статус OVERDUE для эксперимента, если он просрочен.
+     * Логика перенесена из триггера check_experiment_overdue().
+     */
+    private void checkAndSetOverdueStatus(Experiment experiment) {
+        if (experiment.getStatus() != null && !"COMPLETED".equals(experiment.getStatus())
+                && experiment.getDeadline() != null
+                && LocalDate.now().isAfter(experiment.getDeadline())) {
+            experiment.setStatus("OVERDUE");
+        }
     }
 }

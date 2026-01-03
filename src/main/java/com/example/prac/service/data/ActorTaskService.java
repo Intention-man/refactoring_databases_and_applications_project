@@ -8,10 +8,11 @@ import com.example.prac.mappers.impl.ActorTaskMapper;
 import com.example.prac.repository.auth.ActorRepository;
 import com.example.prac.repository.data.ActorTaskRepository;
 import com.example.prac.repository.data.TaskRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,30 +26,28 @@ public class ActorTaskService {
     private final ActorRepository actorRepository;
     private final TaskRepository taskRepository;
     private final ActorTaskMapper actorTaskMapper;
-    private final SessionFactory sessionFactory;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
 
 
+    @Transactional
     public ActorTaskDTO save(ActorTaskDTO actorTaskDTO) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        if (!actorRepository.existsById(actorTaskDTO.getActorId())){
+        if (!actorRepository.existsById(actorTaskDTO.getActorId())) {
             throw new RuntimeException("Actor doesn't exist");
         }
 
         Task task = taskRepository.findById(actorTaskDTO.getTaskId())
                 .orElseThrow(() -> new RuntimeException("Task doesn't exist"));
 
-        if (!Objects.equals(task.getStatus(), "OPEN")){
+        if (!Objects.equals(task.getStatus(), "OPEN")) {
             throw new RuntimeException("Task is not open");
         }
 
-        session.createNativeQuery("CALL add_actor_to_task(:actorId, :taskId)")
+        entityManager.createNativeQuery("CALL add_actor_to_task(:actorId, :taskId)")
                 .setParameter("actorId", actorTaskDTO.getActorId())
                 .setParameter("taskId", actorTaskDTO.getTaskId())
                 .executeUpdate();
-
-        session.getTransaction().commit();
 
         return actorTaskDTO;
     }

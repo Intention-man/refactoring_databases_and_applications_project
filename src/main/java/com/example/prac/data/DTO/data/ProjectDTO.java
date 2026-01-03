@@ -13,7 +13,8 @@ public class ProjectDTO {
     @Schema(description = "Название проекта", example = "Mars Habitat Construction", required = true)
     private String name;
     
-    @Schema(description = "Статус проекта", example = "ACTIVE", allowableValues = {"PLANNED", "ACTIVE", "COMPLETED", "OVERDUE"})
+    @Schema(description = "Статус проекта", example = "ACTIVE",
+            allowableValues = {"PLANNED", "ACTIVE", "COMPLETED", "OVERDUE"})
     private String status;
     
     @Schema(description = "Дата начала проекта в формате yyyy-MM-dd", example = "2024-01-10")

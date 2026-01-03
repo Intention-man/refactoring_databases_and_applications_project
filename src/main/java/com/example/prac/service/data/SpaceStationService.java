@@ -31,7 +31,9 @@ public class SpaceStationService {
     }
 
     public List<SpaceStationDTO> findAll() {
-        return StreamSupport.stream(spaceStationRepository.findAll().spliterator(), false).map(spaceStationMapper::mapTo).toList();
+        return StreamSupport.stream(spaceStationRepository.findAll().spliterator(), false)
+                .map(spaceStationMapper::mapTo)
+                .toList();
     }
 
 

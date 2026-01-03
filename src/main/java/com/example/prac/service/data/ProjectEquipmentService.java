@@ -42,7 +42,8 @@ public class ProjectEquipmentService {
         return projectEquipmentRepository.findById(id.intValue()).map(existing -> {
             ProjectEquipmentDTO existingDTO = projectEquipmentMapper.mapTo(existing);
             // Обновляйте поля, которые необходимо.
-            return projectEquipmentMapper.mapTo(projectEquipmentRepository.save(projectEquipmentMapper.mapFrom(existingDTO)));
+            return projectEquipmentMapper.mapTo(
+                    projectEquipmentRepository.save(projectEquipmentMapper.mapFrom(existingDTO)));
         }).orElseThrow(() -> new RuntimeException("ProjectEquipment doesn't exist"));
     }
 

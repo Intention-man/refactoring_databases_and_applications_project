@@ -1,5 +1,7 @@
 package com.example.prac.exception;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ValidationException extends RuntimeException {
@@ -7,15 +9,18 @@ public class ValidationException extends RuntimeException {
 
     public ValidationException(String message) {
         super(message);
-        this.validationErrors = List.of(message);
+        this.validationErrors = Collections.unmodifiableList(List.of(message));
     }
 
     public ValidationException(List<String> validationErrors) {
         super("Validation failed");
-        this.validationErrors = validationErrors;
+        // Создаем защитную копию списка для предотвращения exposure of internal representation
+        this.validationErrors = Collections.unmodifiableList(
+                new ArrayList<>(validationErrors != null ? validationErrors : List.of()));
     }
 
     public List<String> getValidationErrors() {
+        // Возвращаем unmodifiable list для предотвращения изменения внутреннего состояния
         return validationErrors;
     }
 }

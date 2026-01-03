@@ -14,10 +14,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -45,27 +43,7 @@ public class ApplicationConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                try {
-                    MessageDigest md = MessageDigest.getInstance("MD5");
-                    byte[] digest = md.digest(rawPassword.toString().getBytes());
-                    StringBuilder sb = new StringBuilder();
-                    for (byte b : digest) {
-                        sb.append(String.format("%02x", b));
-                    }
-                    return sb.toString();
-                } catch (NoSuchAlgorithmException e) {
-                    throw new RuntimeException("Error while hashing password", e);
-                }
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return encode(rawPassword).equals(encodedPassword);
-            }
-        };
+        return new BCryptPasswordEncoder();
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.example.prac.service.data;
 import com.example.prac.data.DTO.data.ProjectDTO;
 import com.example.prac.data.model.dataEntity.Project;
 import com.example.prac.data.model.dataEntity.SpaceStation;
+import com.example.prac.exception.ResourceNotFoundException;
 import com.example.prac.mappers.impl.ProjectMapper;
 import com.example.prac.repository.data.ProjectRepository;
 import lombok.AllArgsConstructor;
@@ -70,7 +71,7 @@ public class ProjectService {
 
             Project updatedProject = projectRepository.save(existing);
             return projectMapper.mapTo(updatedProject);
-        }).orElseThrow(() -> new RuntimeException("Project doesn't exist"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Project", id.longValue()));
     }
 
     public void delete(Long id) {

@@ -2,6 +2,8 @@ package com.example.prac.service.data;
 
 import com.example.prac.data.DTO.data.SpaceStationDTO;
 import com.example.prac.data.model.dataEntity.SpaceStation;
+import com.example.prac.exception.ResourceAlreadyExistsException;
+import com.example.prac.exception.ResourceNotFoundException;
 import com.example.prac.mappers.impl.SpaceStationMapper;
 import com.example.prac.repository.data.SpaceStationRepository;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,9 @@ public class SpaceStationService {
     private final SpaceStationMapper spaceStationMapper;
 
     public SpaceStationDTO save(SpaceStationDTO spaceStationDTO) {
+        if (spaceStationDTO.getName() != null && isNameAlreadyUsed(spaceStationDTO.getName())) {
+            throw new ResourceAlreadyExistsException("SpaceStation", spaceStationDTO.getName());
+        }
         SpaceStation spaceStation = spaceStationMapper.mapFrom(spaceStationDTO);
         return spaceStationMapper.mapTo(spaceStationRepository.save(spaceStation));
     }
@@ -64,7 +69,7 @@ public class SpaceStationService {
 
             SpaceStation updatedEntity = spaceStationRepository.save(existing);
             return spaceStationMapper.mapTo(updatedEntity);
-        }).orElseThrow(() -> new RuntimeException("SpaceStation doesn't exist"));
+        }).orElseThrow(() -> new ResourceNotFoundException("SpaceStation", (long) id));
     }
 
     public void delete(Long id) {

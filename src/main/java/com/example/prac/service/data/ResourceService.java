@@ -3,6 +3,7 @@ package com.example.prac.service.data;
 import com.example.prac.data.DTO.data.ResourceDTO;
 import com.example.prac.data.model.dataEntity.Project;
 import com.example.prac.data.model.dataEntity.Resource;
+import com.example.prac.exception.ResourceNotFoundException;
 import com.example.prac.mappers.impl.ResourceMapper;
 import com.example.prac.repository.data.ProjectRepository;
 import com.example.prac.repository.data.ResourceRepository;
@@ -48,13 +49,13 @@ public class ResourceService {
 
             if (dto.getProjectId() != null) {
                 Project project = projectRepository.findById(dto.getProjectId())
-                        .orElseThrow(() -> new RuntimeException("Project doesn't exist"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Project", dto.getProjectId().longValue()));
                 existing.setProject(project);
             }
 
             Resource saved = resourceRepository.save(existing);
             return resourceMapper.mapTo(saved);
-        }).orElseThrow(() -> new RuntimeException("Resource doesn't exist"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Resource", (long) id));
     }
 
     public void delete(Long id) {

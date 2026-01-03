@@ -8,6 +8,7 @@ import com.example.prac.mappers.impl.ProjectMapper;
 import com.example.prac.repository.data.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,8 +21,10 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
 
+    @Transactional
     public ProjectDTO save(ProjectDTO projectDTO) {
         Project project = projectMapper.mapFrom(projectDTO);
+        checkAndSetOverdueStatus(project);
         return projectMapper.mapTo(projectRepository.save(project));
     }
 
@@ -69,6 +72,7 @@ public class ProjectService {
                 existing.setSpaceStation(spaceStation);
             }
 
+            checkAndSetOverdueStatus(existing);
             Project updatedProject = projectRepository.save(existing);
             return projectMapper.mapTo(updatedProject);
         }).orElseThrow(() -> new ResourceNotFoundException("Project", id.longValue()));
@@ -76,6 +80,18 @@ public class ProjectService {
 
     public void delete(Long id) {
         projectRepository.deleteById(id.intValue());
+    }
+
+    /**
+     * Проверяет и устанавливает статус OVERDUE для проекта, если он просрочен.
+     * Логика перенесена из триггера check_project_overdue().
+     */
+    private void checkAndSetOverdueStatus(Project project) {
+        if (project.getStatus() != null && !"COMPLETED".equals(project.getStatus())
+                && project.getEndDate() != null
+                && LocalDate.now().isAfter(project.getEndDate())) {
+            project.setStatus("OVERDUE");
+        }
     }
 
 }

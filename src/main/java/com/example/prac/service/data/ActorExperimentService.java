@@ -8,8 +8,8 @@ import com.example.prac.mappers.impl.ActorExperimentMapper;
 import com.example.prac.repository.auth.ActorRepository;
 import com.example.prac.repository.data.ActorExperimentRepository;
 import com.example.prac.repository.data.ExperimentRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import com.example.prac.exception.BusinessLogicException;
+import com.example.prac.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,27 +26,32 @@ public class ActorExperimentService {
     private final ActorRepository actorRepository;
     private final ExperimentRepository experimentRepository;
     private final ActorExperimentMapper actorExperimentMapper;
-    
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Transactional
     public ActorExperimentDTO save(ActorExperimentDTO actorExperimentDTO) {
-        if (!actorRepository.existsById(actorExperimentDTO.getActorId())) {
-            throw new RuntimeException("Actor doesn't exist");
-        }
+        // Проверка существования актора
+        Actor actor = actorRepository.findById(actorExperimentDTO.getActorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Actor", actorExperimentDTO.getActorId().longValue()));
 
+        // Проверка существования эксперимента и его статуса
         Experiment experiment = experimentRepository.findById(actorExperimentDTO.getExperimentId())
-                .orElseThrow(() -> new RuntimeException("Experiment doesn't exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Experiment", actorExperimentDTO.getExperimentId().longValue()));
 
         if (!Objects.equals(experiment.getStatus(), "OPEN")) {
-            throw new RuntimeException("Experiment is not open");
+            throw new BusinessLogicException("Experiment is not open. Only experiments with status 'OPEN' can have actors assigned.");
         }
 
-        entityManager.createNativeQuery("CALL add_actor_to_experiment(:actorId, :experimentId)")
-                .setParameter("actorId", actorExperimentDTO.getActorId())
-                .setParameter("experimentId", actorExperimentDTO.getExperimentId())
-                .executeUpdate();
+        // Создание и сохранение связи Actor-Experiment
+        ActorExperiment actorExperiment = new ActorExperiment();
+        actorExperiment.setActor(actor);
+        actorExperiment.setExperiment(experiment);
+        actorExperimentRepository.save(actorExperiment);
+
+        // Обновление статуса эксперимента на ACTIVE, если он был OPEN
+        if ("OPEN".equals(experiment.getStatus())) {
+            experiment.setStatus("ACTIVE");
+            experimentRepository.save(experiment);
+        }
 
         return actorExperimentDTO;
     }
@@ -83,7 +88,7 @@ public class ActorExperimentService {
 
             ActorExperiment saved = actorExperimentRepository.save(existing);
             return actorExperimentMapper.mapTo(saved);
-        }).orElseThrow(() -> new RuntimeException("ActorExperiment doesn't exist"));
+        }).orElseThrow(() -> new ResourceNotFoundException("ActorExperiment", id.longValue()));
     }
 
     public void delete(Long id) {
